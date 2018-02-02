@@ -133,7 +133,7 @@ class PrintLabel extends \Magento\Backend\App\Action {
 
 		$line++;
 
-		$country = $this->scopeConfig->getValue('printlabel/address/sender_contry', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+		$country = $this->scopeConfig->getValue('printlabel/address/sender_country', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 		$textWidth = $this->getTextWidth($country, $font, 18, 'UTF-8');
 		$page->drawText($country, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
