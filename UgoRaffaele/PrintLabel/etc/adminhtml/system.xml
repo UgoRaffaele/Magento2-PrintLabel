@@ -11,36 +11,35 @@
 			<resource>UgoRaffaele_PrintLabel::general</resource>
             <group id="general" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>General Configuration</label>
-                <field id="shipping_address_label" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="shipping_address_label" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Shipping Address Label</label>
                 </field>
-				<field id="sender_address_label" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="sender_address_label" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sender Address Label</label>
                 </field>
             </group>
-			<resource>UgoRaffaele_PrintLabel::address</resource>
             <group id="address" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Sender Address</label>
-                <field id="sender_name" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sender_name" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Name</label>
                 </field>
-                <field id="sender_street" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sender_street" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Street</label>
                 </field>
-				<field id="sender_postcode" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="sender_postcode" translate="label" type="text" sortOrder="230" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Postcode</label>
                 </field>
-				<field id="sender_city" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="sender_city" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>City</label>
                 </field>
-				<field id="sender_region" translate="label" type="text" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="sender_region" translate="label" type="text" sortOrder="250" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Region</label>
                 </field>
-				<field id="sender_country" translate="label" type="select" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="sender_country" translate="label" type="select" sortOrder="260" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Country</label>
 					<source_model>Magento\Directory\Model\Config\Source\Country</source_model>
 				</field>
-				<field id="sender_telephone" translate="label" type="text" sortOrder="700" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="sender_telephone" translate="label" type="text" sortOrder="270" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Telephone Number</label>
                 </field>
             </group>

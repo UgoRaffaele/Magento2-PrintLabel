@@ -3,8 +3,8 @@ namespace UgoRaffaele\PrintLabel\Controller\Adminhtml\Orders;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Store\Model\Information as StoreInformation;
 use Magento\Framework\App\Response\Http\FileFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class PrintLabel extends \Magento\Backend\App\Action {
 	
@@ -12,22 +12,22 @@ class PrintLabel extends \Magento\Backend\App\Action {
 	
 	protected $dateTime;
 	
-	protected $_storeInfo;
-	
 	protected $fileFactory;
+	
+	protected $scopeConfig;
  
 	public function __construct(
 		Context $context,
 		Http $request,
 		DateTime $dateTime,
-		StoreInformation $storeInfo,
-		FileFactory $fileFactory
+		FileFactory $fileFactory,
+		ScopeConfigInterface $scopeConfig
 	) {
+		parent::__construct($context);
 		$this->request = $request;
 		$this->dateTime = $dateTime;
-		$this->_storeInfo = $storeInfo;
 		$this->fileFactory = $fileFactory;
-		parent::__construct($context);
+		$this->scopeConfig = $scopeConfig;
 	}
  
     public function execute() {
@@ -48,21 +48,22 @@ class PrintLabel extends \Magento\Backend\App\Action {
 		$style->setLineColor(new \Zend_Pdf_Color_Rgb(0, 0, 0));
 		$style->setFont($font, 19);
 		$page->setStyle($style);
-
-		$line = 1;
-
-		$textWidth = $this->getTextWidth(__('Shipping Address'), $font, 19, 'UTF-8');
-		$page->drawText(__('Shipping Address'), ($width / 4) - ($textWidth / 2), ($height - ($line * $delta + $line * 19)), 'UTF-8');
-
+		
 		$orderId = $this->getRequest()->getParam('id');
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$order = $objectManager->create('\Magento\Sales\Model\Order')->load($orderId);
 		$customerId = $order->getCustomerId();
-
 		$address = $order->getShippingAddress();
+
+		$line = 1;
+
+		$shippingLabel = $this->scopeConfig->getValue('printlabel/general/shipping_address_label', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+		$textWidth = $this->getTextWidth($shippingLabel, $font, 19, 'UTF-8');
+		$page->drawText($shippingLabel, ($width / 4) - ($textWidth / 2), ($height - ($line * $delta + $line * 19)), 'UTF-8');
+
 		$line++;
 
-		$name = $address->getData('prefix') . " " . $address->getData('firstname') . " " . $address->getData('middlename') . " " . $address->getData('lastname') . " " . $address->getData('suffix');
+		$name = $address->getData('firstname') . " " . $address->getData('middlename') . " " . $address->getData('lastname');
 		$textWidth = $this->getTextWidth($name, $font, 19, 'UTF-8');
 		$page->drawText($name, ($width / 4) - ($textWidth / 2), ($height - ($line * $delta + $line * 19)), 'UTF-8');
 
@@ -105,38 +106,40 @@ class PrintLabel extends \Magento\Backend\App\Action {
 
 		$line++;
 
-		$textWidth = $this->getTextWidth(__('Sender'), $font, 18, 'UTF-8');
-		$page->drawText(__('Sender'), ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
+		$senderLabel = $this->scopeConfig->getValue('printlabel/general/sender_address_label', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+		$textWidth = $this->getTextWidth($senderLabel, $font, 18, 'UTF-8');
+		$page->drawText($senderLabel, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
-		$store = $objectManager->create('\Magento\Store\Model\Store')->load($order->getStoreId());
-		$storeAddress = $this->_storeInfo->getStoreInformationObject($store);
 		$line++;
 
-		$name = $storeAddress->getName();
+		$name = $this->scopeConfig->getValue('printlabel/address/sender_name', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 		$textWidth = $this->getTextWidth($name, $font, 18, 'UTF-8');
 		$page->drawText($name, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
 		$line++;
 
-		$street = $storeAddress->getData('street_line1');
+		$street = $this->scopeConfig->getValue('printlabel/address/sender_street', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 		$textWidth = $this->getTextWidth($street, $font, 18, 'UTF-8');
 		$page->drawText($street, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
 		$line++;
 
-		$post = $storeAddress->getData('postcode') . " " . $storeAddress->getData('city') . " (" . $storeAddress->getData('region_id') . ")";
+		$postcode = $this->scopeConfig->getValue('printlabel/address/sender_postcode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+		$city = $this->scopeConfig->getValue('printlabel/address/sender_city', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+		$region = $this->scopeConfig->getValue('printlabel/address/sender_region', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+		$post = $postcode . " " . $city . " (" . $region . ")";
 		$textWidth = $this->getTextWidth($post, $font, 18, 'UTF-8');
 		$page->drawText($post, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
 		$line++;
 
-		$country = $storeAddress->getData('country_id');
+		$country = $this->scopeConfig->getValue('printlabel/address/sender_contry', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 		$textWidth = $this->getTextWidth($country, $font, 18, 'UTF-8');
 		$page->drawText($country, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
 		$line++;
 
-		$telephone = "Tel: " . $storeAddress->getPhone();
+		$telephone = "Tel: " . $this->scopeConfig->getValue('printlabel/address/sender_telephone', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 		$textWidth = $this->getTextWidth($telephone, $font, 18, 'UTF-8');
 		$page->drawText($telephone, ($width / 4) - ($textWidth / 2), ($height - ($line * $deltaStore + $line * 18)), 'UTF-8');
 
