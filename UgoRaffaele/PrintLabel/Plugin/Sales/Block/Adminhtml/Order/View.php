@@ -5,17 +5,17 @@ use Magento\Sales\Block\Adminhtml\Order\View as OrderView;
 
 class View {
 
-	private $_urlInterface = null;
+	protected $urlInterface;
 
 	public function __construct(
 		UrlInterface $urlInterface
 	) {
-		$this->_urlInterface = $urlInterface;
+		$this->urlInterface = $urlInterface;
 	}
 
 	public function beforeSetLayout(OrderView $view) {
 		
-		$url = $this->_urlInterface->getUrl('printlabel/orders/printlabel', array('id' => $view->getOrderId()));
+		$url = $this->urlInterface->getUrl('printlabel/orders/printlabel', array('id' => $view->getOrderId()));
 
 		$view->addButton(
 			'print-label-button',
